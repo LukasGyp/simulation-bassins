@@ -35,7 +35,6 @@ valarray<float> f(float t, valarray<float> x) {
 }
 
 int main() {
-  int n = 2;
   float t = 0;
   valarray<float> x = { 0, 1 };
   float h = 0.01;
