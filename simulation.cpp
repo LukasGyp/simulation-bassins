@@ -37,14 +37,14 @@ valarray<double> rk4(function<valarray<double>(double, valarray<double>)> f, dou
 
 valarray<double> f(double t, valarray<double> x) {
   double k[] = {5., 4., 3., 2.};
-  double Q1 = 3;
-  double Q2 = 4;
+  double Q1 = 5;
+  double Q2 = 0;
   double s = 7.;
 
   return {
     Q1/s - k[0]/s * sign(x[0]-x[1]) * sqrt(abs(x[0]-x[1])) - k[2]/s * sqrt(abs(x[0])),
     k[0]/s * sign(x[0] - x[1]) * sqrt(abs(x[0]-x[1])) - k[1]/s * sign(x[1]-x[2]) * sqrt(abs(x[1]-x[2])),
-    Q2/s + k[1]/s * sign(x[1]-x[2]) * sqrt(abs(x[1]-x[2])) - k[3]/s * x[2]
+    Q2/s + k[1]/s * sign(x[1]-x[2]) * sqrt(abs(x[1]-x[2])) - k[3]/s * sqrt(abs(x[2]))
   };
 }
 
