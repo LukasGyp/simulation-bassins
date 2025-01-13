@@ -1,2 +1,5 @@
 *.exe
 *.csv
+*.ipynb
+.ipynb_checkpoints/*
+*.gif
