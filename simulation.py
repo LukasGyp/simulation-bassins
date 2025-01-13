@@ -46,5 +46,5 @@ for _ in range(100000):
     data = np.concatenate([data, np.array([[t, x[0], x[1], x[2]]])])
 
 end = time.perf_counter()
-print(end - begin)
+print(f'{end - begin:.3f}[s]')
 np.savetxt('data_py.csv', data, delimiter=',')
