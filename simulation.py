@@ -24,18 +24,27 @@ class RK4:
 
 
 def f(t, x):
-    return np.array([x[1], -x[0]])
+    k = [5, 4, 3, 2]
+    q1 = 5
+    q2 = 0
+    s = 7
+
+    return np.array([
+        q1/s - k[0]/s * np.sign(x[0]-x[1]) * np.sqrt(np.abs(x[0]-x[1])) - k[2]/s * np.sqrt(np.abs(x[0])),
+        k[0]/s * np.sign(x[0]-x[1]) * np.sqrt(abs(x[0]-x[1])) - k[1]/s * np.sign(x[1]-x[2]) * np.sqrt(np.abs(x[1]-x[2])),
+        q2/s + k[1]/s * np.sign(x[1]-x[2]) * np.sqrt(np.abs(x[1]-x[2])) - k[3]/s * np.sqrt(x[2])
+        ])
 
 
-rk4 = RK4(f, 0, np.array([0., 1.]), h=0.01)
+rk4 = RK4(f, 0, np.array([0., 0., 0.]), h=0.01)
 
-t_ = [0]
-x_ = [0.]
+data = np.array([[0., 0., 0., 0.]])
 
 begin = time.perf_counter()
-for _ in range(10000000):
+for _ in range(100000):
     t, x = rk4.step()
-    t_.append(t)
-    x_.append(x[0])
+    data = np.concatenate([data, np.array([[t, x[0], x[1], x[2]]])])
+
 end = time.perf_counter()
 print(end - begin)
+np.savetxt('data_py.csv', data, delimiter=',')
