@@ -24,26 +24,32 @@ class RK4:
 
 
 def f(t, x):
-    k = [5, 4, 3, 2]
-    q1 = 5
-    q2 = 0
-    s = 7
+    pump = [
+            [0., 0.4, 0., 0.],
+            [0., 0., 0.3, 0.],
+            [0., 0., 0., 0.28],
+            [0., 0., 0., 0.]
+            ]
+    leakage = np.array([0., 0., 0., 0.36])
+    q = np.array([4.5, 4.5, 4.5, 4.5])
+    s = 900
 
-    return np.array([
-        q1/s - k[0]/s * np.sign(x[0]-x[1]) * np.sqrt(np.abs(x[0]-x[1])) - k[2]/s * np.sqrt(np.abs(x[0])),
-        k[0]/s * np.sign(x[0]-x[1]) * np.sqrt(abs(x[0]-x[1])) - k[1]/s * np.sign(x[1]-x[2]) * np.sqrt(np.abs(x[1]-x[2])),
-        q2/s + k[1]/s * np.sign(x[1]-x[2]) * np.sqrt(np.abs(x[1]-x[2])) - k[3]/s * np.sqrt(x[2])
-        ])
+    result = q / s - leakage / s * np.sqrt(np.abs(x))
+    for i in range(4):
+        for j in range(4):
+            coef = pump[i][j] if x[i] >= x[j] else -pump[j][i]
+            result[i] -= coef / s * np.sqrt(np.abs(x[i]-x[j]))
+    return result
 
 
-rk4 = RK4(f, 0, np.array([0., 0., 0.]), h=0.01)
+rk4 = RK4(f, 0, np.array([0.01, 2.70, 2.45, 1.7]), h=0.01)
 
-data = np.array([[0., 0., 0., 0.]])
+data = np.array([[0., 0.01, 2.70, 2.45, 1.7]])
 
 begin = time.perf_counter()
 for _ in range(100000):
     t, x = rk4.step()
-    data = np.concatenate([data, np.array([[t, x[0], x[1], x[2]]])])
+    data = np.concatenate([data, np.array([[t, x[0], x[1], x[2], x[3]]])])
 
 end = time.perf_counter()
 print(f'{end - begin:.3f}[s]')
