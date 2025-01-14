@@ -18,8 +18,7 @@ void output(vector<tuple<double, valarray<double>>> data) {
   for(int i=0; i < data.size(); i++) {
     file << get<0>(data[i]);
     const valarray<double> row_x = get<1>(data[i]);
-    const int n = row_x.size();
-    for(int j=0; j<n; j++) {
+    for(int j=0; j<4; j++) {
       file << "," << row_x[j]; 
     }
     file << endl;
@@ -36,24 +35,37 @@ valarray<double> rk4(function<valarray<double>(double, valarray<double>)> f, dou
 }
 
 valarray<double> f(double t, valarray<double> x) {
-  double k[] = {5., 4., 3., 2.};
-  double Q1 = 5;
-  double Q2 = 0;
-  double s = 7.;
-
-  return {
-    Q1/s - k[0]/s * sign(x[0]-x[1]) * sqrt(abs(x[0]-x[1])) - k[2]/s * sqrt(abs(x[0])),
-    k[0]/s * sign(x[0] - x[1]) * sqrt(abs(x[0]-x[1])) - k[1]/s * sign(x[1]-x[2]) * sqrt(abs(x[1]-x[2])),
-    Q2/s + k[1]/s * sign(x[1]-x[2]) * sqrt(abs(x[1]-x[2])) - k[3]/s * sqrt(abs(x[2]))
+  double pump[4][4] = {
+    {0., 5., 0., 0.},
+    {5., 0., 4., 0.},
+    {0., 4., 0., 3.},
+    {0., 0., 3., 0.},
   };
+  double leakage[4] = {1.0, 2.0, 3.0, 4.0};
+  double q[4] = {1.0, 3.0, 2.0, 1.0};
+  double s = 7.;
+  double s_inv = 1/s;
+
+  valarray<double> result(0., 4);
+  
+  for(int i=0; i<4; i++) {
+    result[i] += q[i] * s_inv;
+    for(int j=0; j<4; j++) {
+      result[i] -= pump[i][j] * s_inv * sign(x[i]-x[j]) * sqrt(abs(x[i]-x[j]));
+    }
+    result[i] -= leakage[i] * s_inv * sqrt(abs(x[i]));
+  }
+
+  return result;
 }
 
 int main() {
   double t = 0;
-  valarray<double> x = { 0., 0., 0. };
+  valarray<double> x = { 0.01, 2.70, 2.45, 1.70 };
   double h = 0.01;
 
   vector<tuple<double, valarray<double>>> data;
+  data.emplace_back(tuple<double, valarray<double>>(t, x));
   auto begin = clock();
   for(int i=0; i<100000; i++) {
     x = rk4(f, t, x, h);
