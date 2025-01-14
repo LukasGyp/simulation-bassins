@@ -18,27 +18,30 @@ class RK4:
         k2 = f(t + h/2, x + h * k1 / 2)
         k3 = f(t + h/2, x + h * k2 / 2)
         k4 = f(t + h, x + h * k3)
-        self.x += h * (k1 + 2*k2 + 2*k3 + k4) / 6
+        self.x += h * (k1 + k4 + 2*(k2 + k3)) / 6
         self.t += h
         return self.t, self.x
 
 
 def f(t, x):
     pump = [
-            [0., 0.4, 0., 0.],
-            [0., 0., 0.3, 0.],
+            [0., 0.40, 0., 0.],
+            [0., 0., 0.30, 0.],
             [0., 0., 0., 0.28],
             [0., 0., 0., 0.]
             ]
     leakage = np.array([0., 0., 0., 0.36])
     q = np.array([4.5, 4.5, 4.5, 4.5])
     s = 900
+    s_inv = 1 / s
 
-    result = q / s - leakage / s * np.sqrt(np.abs(x))
+    result = np.zeros(4)
     for i in range(4):
+        result[i] += q[i] * s_inv
         for j in range(4):
-            coef = pump[i][j] if x[i] >= x[j] else -pump[j][i]
-            result[i] -= coef / s * np.sqrt(np.abs(x[i]-x[j]))
+            coef = pump[i][j] if x[i]-x[j] >= 0 else -pump[j][i]
+            result[i] -= coef * s_inv * np.sqrt(np.abs(x[i]-x[j]))
+        result[i] -= leakage[i] * s_inv * np.sqrt(np.abs(x[i]))
     return result
 
 

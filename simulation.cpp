@@ -35,6 +35,7 @@ valarray<double> rk4(function<valarray<double>(double, valarray<double>)> f, dou
 }
 
 valarray<double> f(double t, valarray<double> x) {
+
   double pump[4][4] = {
     {0., 0.40, 0., 0.},
     {0., 0., 0.30, 0.},
@@ -51,7 +52,7 @@ valarray<double> f(double t, valarray<double> x) {
   for(int i=0; i<4; i++) {
     result[i] += q[i] * s_inv;
     for(int j=0; j<4; j++) {
-      double coef = pump[i][j] ? x[i]-x[j] >= 0 : -pump[j][i];
+      double coef = x[i]-x[j] >= 0 ? pump[i][j] : -pump[j][i];
       result[i] -= coef * s_inv  * sqrt(abs(x[i]-x[j]));
     }
     result[i] -= leakage[i] * s_inv * sqrt(abs(x[i]));
