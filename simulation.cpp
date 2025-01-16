@@ -37,25 +37,25 @@ valarray<double> rk4(function<valarray<double>(double, valarray<double>)> f, dou
 valarray<double> f(double t, valarray<double> x) {
 
   double pump[4][4] = {
-    {0., 1.5, 0., 0.},
-    {0., 0., 1.5, 0.},
-    {0., 0., 0., 1.5},
-    {0., 0., 0., 0.},
+    {0., 3., 0., 0.},
+    {3., 0., 2., 0.},
+    {0., 2., 0., 0.98},
+    {0., 0., 0.98, 0.},
   };
-  double leakage[4] = {67.8, 10., 2., 0.72};
-  double q[4] = {21.5, 21.5, 21.5, 21.5};
-  double s = 900.;
-  double s_inv = 1/s;
+  double leakage[4] = {1.6, 0.2, 0.38, 0.2};
+  double q[4] = {0.52, 0.52, 0.52, 0.52};
+  double s[4] = {900., 900., 900., 900.};
+  double s_inv[4] = {1/s[0], 1/s[1], 1/s[2], 1/s[3]};
 
   valarray<double> result(0., 4);
   
   for(int i=0; i<4; i++) {
-    result[i] += q[i] * s_inv;
+    result[i] += q[i] * s_inv[i];
     for(int j=0; j<4; j++) {
       double coef = x[i]-x[j] >= 0 ? pump[i][j] : -pump[j][i];
-      result[i] -= coef * s_inv  * sqrt(abs(x[i]-x[j]));
+      result[i] -= coef * s_inv[i]  * sqrt(abs(x[i]-x[j]));
     }
-    result[i] -= leakage[i] * s_inv * sqrt(abs(x[i]));
+    result[i] -= leakage[i] * s_inv[i] * sqrt(abs(x[i]));
   }
 
   return result;
@@ -63,16 +63,18 @@ valarray<double> f(double t, valarray<double> x) {
 
 int main() {
   double t = 0;
-  valarray<double> x = { 0.01, 2.70, 2.45, 1.70 };
+  valarray<double> x = { 0.74, 0.93, 1.00, 1.23 };
   double h = 0.01;
 
   vector<tuple<double, valarray<double>>> data;
   data.emplace_back(tuple<double, valarray<double>>(t, x));
   auto begin = clock();
-  for(int i=0; i<100000; i++) {
+  for(int i=0; i<1000000; i++) {
     x = rk4(f, t, x, h);
     t += h;
-    data.emplace_back(tuple<double, valarray<double>>(t, x));
+    if(i%100 == 0) {
+      data.emplace_back(tuple<double, valarray<double>>(t, x));
+    }
   }
   auto end = clock();
   cout << (double)(end - begin)/CLOCKS_PER_SEC << "[s]" << endl;
