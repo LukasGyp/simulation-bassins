@@ -25,35 +25,40 @@ class RK4:
 
 def f(t, x):
     pump = [
-            [0., 0.40, 0., 0.],
-            [0., 0., 0.30, 0.],
-            [0., 0., 0., 0.28],
-            [0., 0., 0., 0.]
+            [0., 3., 0., 0.],
+            [3., 0., 2., 0.],
+            [0., 2., 0., 1.],
+            [0., 0., 1., 0.]
             ]
-    leakage = np.array([0., 0., 0., 0.36])
-    q = np.array([4.5, 4.5, 4.5, 4.5])
-    s = 900
+    leakage = np.array([1.6, 0.2, 0.38, 0.2])
+    q = np.array([0.52, 0.52, 0.52, 0.52])
+    s = np.array([900., 900., 900., 900.])
     s_inv = 1 / s
 
     result = np.zeros(4)
     for i in range(4):
-        result[i] += q[i] * s_inv
+        result[i] += q[i] * s_inv[i]
         for j in range(4):
             coef = pump[i][j] if x[i]-x[j] >= 0 else -pump[j][i]
-            result[i] -= coef * s_inv * np.sqrt(np.abs(x[i]-x[j]))
-        result[i] -= leakage[i] * s_inv * np.sqrt(np.abs(x[i]))
+            result[i] -= coef * s_inv[i] * np.sqrt(np.abs(x[i]-x[j]))
+        result[i] -= leakage[i] * s_inv[i] * np.sqrt(np.abs(x[i]))
     return result
 
 
-rk4 = RK4(f, 0, np.array([0.01, 2.70, 2.45, 1.7]), h=0.01)
+if __name__ == "__main__":
+    t = 0
+    x = np.array([0.74, 0.93, 1.00, 1.23])
 
-data = np.array([[0., 0.01, 2.70, 2.45, 1.7]])
+    rk4 = RK4(f, t, x, h=0.01)
 
-begin = time.perf_counter()
-for _ in range(100000):
-    t, x = rk4.step()
-    data = np.concatenate([data, np.array([[t, x[0], x[1], x[2], x[3]]])])
+    data = np.array([[t, x[0], x[1], x[2], x[3]]])
 
-end = time.perf_counter()
-print(f'{end - begin:.3f}[s]')
-np.savetxt('data_py.csv', data, delimiter=',')
+    begin = time.perf_counter()
+    for i in range(100000):
+        t, x = rk4.step()
+        if i % 100 == 0:
+            data = np.concatenate([data, np.array([[t, x[0], x[1], x[2], x[3]]])])
+
+    end = time.perf_counter()
+    print(f'{end - begin:.3f}[s]')
+    np.savetxt('data_py.csv', data, delimiter=',')
