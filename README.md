@@ -1,4 +1,8 @@
-1. Mettre des parametres (Si vous voulez)
+# Simulation Bassins
+Ce programme est une simulation des niveaux d'eau dans des bassins mutuellement connectés,
+Le projet a été réalisé dans le cadre du cours de modélisation. 
+
+## 1. Mettre des parametres (Si vous voulez)
 Il y a deux simulateurs dans ce répertoire, qui ont la même comportement. 
 
 La fonction nommé 'f' se trouve au milieux de code. 
@@ -10,7 +14,7 @@ Vous pouvez essayer de changer les parametres
 
 Puis, vous mettez aussi la condition initiale qui se situe dans la première partie dans la fonction main.
 
-2. Exécuter le calcul
+## 2. Exécuter le calcul
 Si vous avez un compilateur C++, je vous invite à compiler "simulation.cpp".
 (Le code a été amélioré, vous pouvez exécuter dans dizaines de seconds même en python)
 
@@ -19,5 +23,5 @@ Sinon, executez "simulation.py".
 Enfin, vous obtenez "data.csv" qui contient le résultat de la simulation.
 
 
-2. Analyser le résultat
+# 3. Analyser le résultat
 Ouvrir "analyse.ipynb".
