@@ -1,3 +1,5 @@
+# Simulation des niveaux d'eau dans des bassins mutuellement connectés 
+
 1. Mettre des parametres (Si vous voulez)
 Il y a deux simulateurs dans ce répertoire, qui ont la même comportement. 
 
