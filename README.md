@@ -1,4 +1,6 @@
-# Simulation des niveaux d'eau dans des bassins mutuellement connectés 
+# Simulation Bassins
+Ce programme est une simulation des niveaux d'eau dans des bassins mutuellement connectés,
+Le projet a été réalisé dans le cadre du cours de modélisation. 
 
 ## 1. Mettre des parametres (Si vous voulez)
 Il y a deux simulateurs dans ce répertoire, qui ont la même comportement. 
