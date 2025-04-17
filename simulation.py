@@ -61,4 +61,4 @@ if __name__ == "__main__":
 
     end = time.perf_counter()
     print(f'{end - begin:.3f}[s]')
-    np.savetxt('data_py.csv', data, delimiter=',')
+    np.savetxt('data.csv', data, delimiter=',')

@@ -1,6 +1,6 @@
 *.exe
 *.csv
-*.ipynb
+analyse-Copy1.ipynb
 .ipynb_checkpoints/*
 *.gif
 *.eps
